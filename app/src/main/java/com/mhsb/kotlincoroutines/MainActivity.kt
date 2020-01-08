@@ -19,15 +19,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         val coroutineScope = CoroutineScope(Dispatchers.Main)
         coroutineScope.launch {
-            val drawable = getImg()
-            img.setImageDrawable(drawable)
+            val drawable = getImg() //此处为suspend异步调用
+            img.setImageDrawable(drawable) //自动切换成UI线程设置图片
         }
 
     }
 
+    /**
+     * withContext 和launch的区别就是避免嵌套回调
+     */
     private suspend fun getImg(): Drawable = withContext(Dispatchers.IO) {
         System.out.println(Thread.currentThread().name)
         val httpUrlConnection: HttpURLConnection =
